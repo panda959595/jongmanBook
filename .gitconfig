@@ -1,0 +1,7 @@
+[user]
+	email = "panda959595@gmail.com"
+	name = "Park So Min"
+[push]
+	default = matching
+[core]
+	editor = nano
