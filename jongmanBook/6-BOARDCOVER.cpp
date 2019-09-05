@@ -3,49 +3,46 @@ using namespace std;
 int h, w;
 int ans;
 char map[21][21];
-char block[4][2][2] = {
-	{{'.','#'},{'#','#'}},
-	{{'#','.'},{'#','#'}},
-	{{'#','#'},{'.','#'}},
-	{{'#','#'},{'#','.'}}
+char block[4][3][2] = {
+	{{0,0},{0,1},{1,0}},
+	{{0,0},{1,0},{1,1}},
+	{{0,0},{1,0},{1,-1}},
+	{{0,0},{0,1},{1,1}}
 };
-void func(int num) {
-	if (num == 0) {
+void func() {
+	int x, y;
+	x = y = -1;
+	for (int i = 0; i < h; i++) {
+		for (int j = 0; j < w; j++) {
+			if (map[i][j] == '.') {
+				x = i;
+				y = j;
+				break;
+			}
+		}
+		if (x != -1) {
+			break;
+		}
+	}
+	if (x == -1) {
 		ans++;
 		return;
 	}
-	for (int i = 0; i < h - 1; i++) {
-		for (int j = 0; j < w - 1; j++) {
-			for (int k = 0; k < 4; k++) {
-				bool flag = true;
-				for (int x = 0; x < 2; x++) {
-					for (int y = 0; y < 2; y++) {
-						if (block[k][x][y] == '#'&&map[i + x][j + y] == '#') {
-							flag = false;
-						}
-					}
-				}
-				if (flag) {
-					for (int x = 0; x < 2; x++) {
-						for (int y = 0; y < 2; y++) {
-							if (block[k][x][y] == '#') {
-								map[i + x][j + y] = '#';
-							}
-						}
-					}
-					func(num - 3);
-					for (int x = 0; x < 2; x++) {
-						for (int y = 0; y < 2; y++) {
-							if (block[k][x][y] == '#') {
-								map[i + x][j + y] = '.';
-							}
-						}
-					}
-				}
-
+	for (int k = 0; k < 4; k++) {
+		bool flag = true;
+		for (int i = 0; i < 3; i++) {
+			if ((x + block[k][i][0] >= h || y + block[k][i][1] >= w) || map[x + block[k][i][0]][y + block[k][i][1]] == '#') {
+				flag = false;
+				break;
 			}
-			if (map[i][j] == '.') {
-				return;
+		}
+		if (flag) {
+			for (int i = 0; i < 3; i++) {
+				map[x + block[k][i][0]][y + block[k][i][1]] = '#';
+			}
+			func();
+			for (int i = 0; i < 3; i++) {
+				map[x + block[k][i][0]][y + block[k][i][1]] = '.';
 			}
 		}
 	}
@@ -73,7 +70,7 @@ int main() {
 			cout << 1 << endl;
 			continue;
 		}
-		func(temp);
+		func();
 		cout << ans << endl;
 	}
 	return 0;
